@@ -39,9 +39,13 @@ Datos <- read.csv("FuelEfficiency.csv", header = TRUE, sep = ",", dec = ".")
 head(Datos)
 
 ```
+![Screenshot 2023-06-11 232636](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/15cb9951-3c4e-4e44-9778-f666b45fd6e9)
+
 ```{r}
 str(Datos)
 ```
+![Screenshot 2023-06-11 232732](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/36252843-cc73-43c7-a4b1-304de6042998)
+
 ### 3. Objetivos:
 Establecer los objetivos que se pretenden lograr con la investigación. Estos objetivos deben ser claros, medibles y estar alineados con el problema planteado. 
 
@@ -58,6 +62,8 @@ library(skimr)
 # Explorar completitud de base de datos
 skim(Datos)
 ```
+![Screenshot 2023-06-11 232848](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/245e3514-2dac-4e9a-a5d7-9deba14605f5)
+![Screenshot 2023-06-11 232906](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/d29ad27a-96b9-437f-9b53-74fae5ca41b8)
 
 ```{r}
 library(mice)
@@ -65,6 +71,7 @@ library(mice)
 # Mostrar patron de datos ausentes (NA)
 md.pattern(Datos, rotate.names = TRUE)
 ```
+![Screenshot 2023-06-11 232924](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/2647a7ab-b0c1-4aaf-b5e5-7e6b4c4f76bd)
 
 ### 5. Estadística descriptiva:
 Realizar un análisis descriptivo de los datos recolectados. Esto implica calcular medidas resumen (como promedios, medianas, desviaciones estándar, cuartiles, etc.), visualizar los datos mediante gráficos adecuados y realizar exploración inicial para comprender las características generales de los datos.
@@ -72,6 +79,7 @@ Realizar un análisis descriptivo de los datos recolectados. Esto implica calcul
 ```{r}
 summary(Datos)
 ```
+![Screenshot 2023-06-11 232938](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/d799c681-258a-44a0-a55f-2abee0d1a7c2)
 
 ```{r}
 par(mfrow=c(4,4))
@@ -124,6 +132,7 @@ hist(Datos$ET, freq = FALSE, col="deeppink4",
      ylab = "Densidad")
 lines(density(Datos$ET), col= "red")
 ```
+![Screenshot 2023-06-11 232951](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/17537a2b-e292-4e86-a366-a30dd219b485)
 
 ### 6. Análisis estadístico inferencial:
 Aplicar técnicas de estadística inferencial para obtener conclusiones más allá de lo observado de manera exploratoria. Esto podría implicar la realización de pruebas de hipótesis, intervalos de confianza, análisis de regresión, análisis de varianza, etc.  En general técnicas estadísticas que considere adecuadas para el problema en cuestión.
@@ -131,6 +140,7 @@ Aplicar técnicas de estadística inferencial para obtener conclusiones más all
 ```{r}
 pairs(Datos)
 ```
+![Screenshot 2023-06-11 233049](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/bcf596a7-b609-42b4-9d37-91210963e707)
 
 
 ```{r}
@@ -140,6 +150,8 @@ library(stats)
 modelo <- lm(MPG~., data = Datos[,-2])
 summary(modelo)
 ```
+![Screenshot 2023-06-11 233103](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/85435ca4-0cd9-4b65-8e06-9d23c2785a9a)
+
 Podemos observar en el siguiente modelo linear que las unicas variables estadisticamente significativa son WT y ACC
 
 ```{r}
@@ -150,6 +162,8 @@ lmMPG <- lm(MPG~factor(NC)+factor(ET), data = Datos)
 anovaMPG <- aov(lmMPG)
 summary(anovaMPG)
 ```
+![Screenshot 2023-06-11 233121](https://github.com/martenpreciado23/Proyecto-Probabilidad-y-Estadistica/assets/79435399/71c54733-a5ce-489b-b37c-de9faba03192)
+
 A partir de estos resultados que ninguno es mayor a 0.05 podemos rechazar nuestra hipotesis nula 
 
 
