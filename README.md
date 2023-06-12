@@ -1,0 +1,168 @@
+---
+title: "Curso propedéutico de Probabilidad y Estadística"
+author: "Martin Eduardo Preciado Orozco"
+date: '2023-06-11'
+output:
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+#### Probabilidad y Estadística - Curso Propedeutico para Maestría en Ciencia de Datos
+
+### 1. Selección del problema:
+Identificar un problema relevante en el campo de la ciencia de datos, que pueda abordarse mediante métodos estadísticos. 
+
+En la industria automotriz siempre se busca optimizar los procesos para satisfacer a los clientes con la mejor eficiencia posible en sus productos, en este proyecto buscaremos si existe una relacion entre las variables que miden la eficiencia del combustible para encontrar areas de mejora y un uso optimo.
+
+### 2. Descripción del problema:
+Detallar claramente el problema a investigar, incluyendo su contexto, antecedentes, especificando la(s) variable(s) que se utilizan en la problemática planteada
+
+Esta base de datos trata sobre la eficiencia del combustible de carros a partir de las siguientes variables:
+- MPG: Millas por galon
+- GPM: Galones por 100 millas
+- WT: Peso del carro (en 1000 lb)
+- DIS: Desplazamiento cubico (en pulgadas cubicas)
+- NC: Numero de cilindros
+- HP: Caballos de potencia
+- ACC: Aceleracion (Segundos transcurridos de 0 a 60 mph)
+- ET: Tipo de motor (en V o linea (codificado en 1))
+
+Lo que se quiere lograr con esta base de datos es encontrar si las millas por galon dependen de alguna variable
+
+```{r}
+rm(list=ls())
+
+setwd("C:/Users/marti/Desktop/python_work/CSVs")
+
+Datos <- read.csv("FuelEfficiency.csv", header = TRUE, sep = ",", dec = ".")
+head(Datos)
+
+```
+```{r}
+str(Datos)
+```
+### 3. Objetivos:
+Establecer los objetivos que se pretenden lograr con la investigación. Estos objetivos deben ser claros, medibles y estar alineados con el problema planteado. 
+
+Determinar si existe una diferencia significativa en la eficiencia del combustible (MPG) entre carros con motores en V y carros con motores en línea.
+- Métrica de medición: Valor p del análisis de varianza (ANOVA).
+- Meta: Obtener un valor p menor que 0.05 para rechazar la hipótesis nula.
+
+### 4. Recopilación y limpieza de datos:
+Si se utilizan datos reales para abordar el problema, es necesario describir detalladamente cómo se recopilaron los datos y qué medidas se tomaron para limpiarlos. Esto puede incluir la eliminación de datos faltantes, la detección y corrección de valores atípicos, la estandarización de formatos y cualquier otro paso necesario para garantizar la calidad de los datos utilizados. En caso de utilizar datos simulados, describir el proceso de simulación de éstos.
+
+```{r}
+library(skimr)
+
+# Explorar completitud de base de datos
+skim(Datos)
+```
+
+```{r}
+library(mice)
+
+# Mostrar patron de datos ausentes (NA)
+md.pattern(Datos, rotate.names = TRUE)
+```
+
+### 5. Estadística descriptiva:
+Realizar un análisis descriptivo de los datos recolectados. Esto implica calcular medidas resumen (como promedios, medianas, desviaciones estándar, cuartiles, etc.), visualizar los datos mediante gráficos adecuados y realizar exploración inicial para comprender las características generales de los datos.
+
+```{r}
+summary(Datos)
+```
+
+```{r}
+par(mfrow=c(4,4))
+
+# MPG
+hist(Datos$MPG, freq = FALSE, col="deeppink4",
+     main="MPG",
+     ylab = "Densidad")
+lines(density(Datos$MPG), col= "red")
+
+# GPM
+hist(Datos$GPM, freq = FALSE, col="deeppink4",
+     main="GPM",
+     ylab = "Densidad")
+lines(density(Datos$GPM), col= "red")
+
+# WT
+hist(Datos$WT, freq = FALSE, col="deeppink4",
+     main="WT",
+     ylab = "Densidad")
+lines(density(Datos$WT), col= "red")
+
+# DIS
+hist(Datos$DIS, freq = FALSE, col="deeppink4",
+     main="DIS",
+     ylab = "Densidad")
+lines(density(Datos$DIS), col= "red")
+
+# NC
+hist(Datos$NC, freq = FALSE, col="deeppink4",
+     main="NC",
+     ylab = "Densidad")
+lines(density(Datos$NC), col= "red")
+
+# HP
+hist(Datos$HP, freq = FALSE, col="deeppink4",
+     main="HP",
+     ylab = "Densidad")
+lines(density(Datos$HP), col= "red")
+
+# ACC
+hist(Datos$ACC, freq = FALSE, col="deeppink4",
+     main="ACC",
+     ylab = "Densidad")
+lines(density(Datos$ACC), col= "red")
+
+# ET
+hist(Datos$ET, freq = FALSE, col="deeppink4",
+     main="ET",
+     ylab = "Densidad")
+lines(density(Datos$ET), col= "red")
+```
+
+### 6. Análisis estadístico inferencial:
+Aplicar técnicas de estadística inferencial para obtener conclusiones más allá de lo observado de manera exploratoria. Esto podría implicar la realización de pruebas de hipótesis, intervalos de confianza, análisis de regresión, análisis de varianza, etc.  En general técnicas estadísticas que considere adecuadas para el problema en cuestión.
+
+```{r}
+pairs(Datos)
+```
+
+
+```{r}
+library(dplyr)
+library(stats)
+
+modelo <- lm(MPG~., data = Datos[,-2])
+summary(modelo)
+```
+Podemos observar en el siguiente modelo linear que las unicas variables estadisticamente significativa son WT y ACC
+
+```{r}
+# Modelo anova
+# Hipótesis: El rendimiento MPG depende del Número de cilindros (NC) y del tipo de motor (ET)
+
+lmMPG <- lm(MPG~factor(NC)+factor(ET), data = Datos)
+anovaMPG <- aov(lmMPG)
+summary(anovaMPG)
+```
+A partir de estos resultados que ninguno es mayor a 0.05 podemos rechazar nuestra hipotesis nula 
+
+
+### 7. Resultados y conclusiones:
+Presentar los resultados de manera clara y concisa. Interpretar los resultados obtenidos en el contexto del problema planteado y los objetivos de la investigación. 
+
+
+En base al análisis realizado, se presentan los siguientes resultados y conclusiones:
+
+Variables significativas: El número de cilindros (NC) y el tipo de motor (ET) mostraron ser variables significativas que impactan la eficiencia del combustible. Ambas variables tienen un efecto estadísticamente significativo en la variable de respuesta MPG.
+
+Número de cilindros (NC): Se encontró una diferencia significativa en la eficiencia del combustible entre carros con diferentes números de cilindros. A medida que el número de cilindros aumenta, la eficiencia del combustible disminuye. Este hallazgo sugiere que los carros con menos cilindros tienden a ser más eficientes en el consumo de combustible.
+
+Tipo de motor (ET): El tipo de motor, ya sea en V o en línea, también influye en la eficiencia del combustible. Se observó una diferencia significativa en la eficiencia del combustible entre estos dos tipos de motores. Los carros con motores en línea presentaron una mayor eficiencia del combustible en comparación con aquellos con motores en V.
+
+Estos resultados respaldan los objetivos de la investigación al proporcionar evidencia cuantitativa de las variables que afectan la eficiencia del combustible en los carros estudiados. La información obtenida puede ser útil para la toma de decisiones en el diseño y desarrollo de carros más eficientes en términos de consumo de combustible.
